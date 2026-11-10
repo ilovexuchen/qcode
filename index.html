@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="粘贴活动链接，一键生成四川大学第二课堂活动的签到、签退二维码，支持保存图片与本机历史记录。">
+  <meta name="referrer" content="no-referrer">
+  <title>码上 · 活动二维码助手</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./vendor/qrcode.js" defer></script>
+  <script src="./core.js" defer></script>
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <svg class="svg-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="m10 13 4-4m-6 7-1 1a4 4 0 0 1-6-6l5-5a4 4 0 0 1 6 0m0 12a4 4 0 0 0 6 0l5-5a4 4 0 0 0-6-6l-1 1" transform="translate(1 1) scale(.9)"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 10a9 9 0 1 1 1 7M3 4v6h6m3-4v6l4 2"/></symbol>
+    <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1Z"/></symbol>
+    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12m-5-5 5 5 5-5M4 15v5h16v-5"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="13" rx="2"/><path d="M15 8V3H3v12h5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M6 18 18 6"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6Z"/><path d="m8 12 3 3 5-5"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="7"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-paste" viewBox="0 0 24 24"><path d="M9 5H5v16h14V5h-4"/><rect x="9" y="2" width="6" height="6" rx="2"/><path d="M8 12h8m-8 4h5"/></symbol>
+    <symbol id="i-qr" viewBox="0 0 24 24"><path d="M3 3h6v6H3zm12 0h6v6h-6zM3 15h6v6H3zm12 0h3v3h3v3h-6zm6-3v3m-9-3v4m0 5v-2M3 12h5m4-9v5"/></symbol>
+  </svg>
+  <header class="site-header">
+    <div class="shell header-inner">
+      <a class="brand" href="#home" aria-label="码上，返回主页">
+        <span class="brand-mark"><svg class="icon"><use href="#i-qr"/></svg></span>
+        <span>码上<span class="brand-divider">/</span><span class="brand-subtitle">活动二维码助手</span></span>
+      </a>
+      <nav class="desktop-nav" aria-label="主导航">
+        <a href="#home" data-nav="home" class="nav-link active" aria-current="page">生成二维码</a>
+        <a href="#history" data-nav="history" class="nav-link"><svg class="icon"><use href="#i-history"/></svg>历史记录<span class="history-count" data-count>0</span></a>
+      </nav>
+      <span class="header-tag"><span class="status-dot"></span>为每一次活动，轻松一码</span>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="home-view" aria-labelledby="home-title">
+      <div class="intro">
+        <span class="eyebrow"><span class="tiny-square"></span> SCU · 第二课堂活动工具</span>
+        <h1 id="home-title">活动链接，<span>一贴成码。</span></h1>
+        <p>签到与签退，一次准备好。让活动的开始和结束都更从容。</p>
+      </div>
+      <div class="workspace">
+        <section class="input-panel panel" aria-labelledby="input-heading">
+          <div class="section-heading"><span class="step-number">01</span><h2 id="input-heading">放入活动链接</h2><span class="mini-label">INPUT</span></div>
+          <form id="generator-form" novalidate>
+            <div class="field-label-row"><label for="activity-url">活动详情链接</label><button class="text-button" type="button" id="paste-button"><svg class="icon"><use href="#i-paste"/></svg>粘贴</button></div>
+            <div class="textarea-wrap"><textarea id="activity-url" name="url" rows="5" placeholder="在这里粘贴活动详情页链接&#10;https://dekt.scu.edu.cn/…" spellcheck="false" autocapitalize="off" autocomplete="off" inputmode="url" aria-describedby="url-hint url-error" required></textarea><svg class="input-link icon"><use href="#i-link"/></svg></div>
+            <p id="url-hint" class="field-hint">支持第二课堂活动详情页、签到或签退链接</p>
+            <p id="url-error" class="field-error" role="alert" hidden></p>
+            <label class="title-label" for="activity-title">活动名称 <span>选填，方便下次找到</span></label>
+            <input id="activity-title" name="title" maxlength="40" placeholder="例如：周末志愿服务活动" autocomplete="off">
+            <button class="primary-button generate-button" id="generate-button" type="submit"><svg class="icon"><use href="#i-qr"/></svg><span>生成签到 / 签退码</span><svg class="icon end-icon"><use href="#i-arrow"/></svg></button>
+            <div class="form-bottom"><span><svg class="icon"><use href="#i-shield"/></svg>本机生成，链接不上交</span><button type="button" id="example-button" class="text-button">试试示例 <span aria-hidden="true">↗</span></button></div>
+          </form>
+          <div class="input-note"><span class="note-dot"></span><p>同一个活动 ID，自动生成两种签到链接。<br>生成记录会保存在当前浏览器，随时可再次使用。</p></div>
+        </section>
+
+        <section class="preview-panel panel" aria-labelledby="preview-heading">
+          <div class="section-heading"><span class="step-number">02</span><h2 id="preview-heading">领取你的二维码</h2><span id="preview-status" class="preview-status">等待生成</span></div>
+          <div id="preview-empty" class="preview-empty">
+            <div class="empty-art" aria-hidden="true"><span class="art-dot dot-one"></span><span class="art-dot dot-two"></span><span class="floating-plus">+</span><div class="art-paper"><span class="art-corner top-left"></span><span class="art-corner top-right"></span><span class="art-corner bottom-left"></span><span class="art-corner bottom-right"></span><svg><use href="#i-qr"/></svg><span class="art-line"></span><span class="art-short-line"></span></div><span class="art-badge"><svg class="icon"><use href="#i-check"/></svg>准备就绪</span></div>
+            <h3>等你的一次粘贴</h3>
+            <p>放入链接，签到码和签退码就会出现在这里。<br>生成后可以分别保存为清晰的 PNG 图片。</p>
+            <div class="empty-tags"><span>无需登录</span><span>无需上传</span><span>即用即存</span></div>
+          </div>
+          <div id="result" hidden>
+            <div class="result-meta"><div><h3 id="result-title"></h3><p>活动 ID <span id="result-id"></span></p></div><button type="button" id="copy-id" class="icon-button" aria-label="复制完整活动 ID" title="复制活动 ID"><svg class="icon"><use href="#i-copy"/></svg></button></div>
+            <div class="qr-grid">
+              <article class="qr-card check-in"><div class="qr-card-top"><span class="type-badge"><span></span>活动签到</span><span class="type-en">CHECK IN</span></div><canvas id="qr-in" class="qr-canvas" width="1200" height="1200" role="img" aria-label="活动签到二维码"></canvas><p class="qr-description">活动开始，扫一扫签到</p><button class="save-button" type="button" data-save="in"><svg class="icon"><use href="#i-download"/></svg>保存签到图片</button><button class="copy-button" type="button" data-copy="in"><svg class="icon"><use href="#i-link"/></svg>复制签到链接</button></article>
+              <article class="qr-card check-out"><div class="qr-card-top"><span class="type-badge"><span></span>活动签退</span><span class="type-en">CHECK OUT</span></div><canvas id="qr-out" class="qr-canvas" width="1200" height="1200" role="img" aria-label="活动签退二维码"></canvas><p class="qr-description">活动结束，扫一扫签退</p><button class="save-button" type="button" data-save="out"><svg class="icon"><use href="#i-download"/></svg>保存签退图片</button><button class="copy-button" type="button" data-copy="out"><svg class="icon"><use href="#i-link"/></svg>复制签退链接</button></article>
+            </div>
+            <p class="result-note"><svg class="icon"><use href="#i-check"/></svg>已生成白底高清二维码，可直接用于活动展示</p>
+            <button class="text-button result-home" type="button" id="reset-button">重新生成另一场活动 <svg class="icon"><use href="#i-arrow"/></svg></button>
+          </div>
+        </section>
+      </div>
+      <div class="how-it-works" aria-label="使用步骤"><span><b>1</b>复制活动链接</span><span class="flow-line"></span><span><b>2</b>生成两张二维码</span><span class="flow-line"></span><span><b>3</b>保存并分享图片</span></div>
+      <p class="usage-note">本工具只转换链接，不会执行签到或签退。实际使用需遵守活动规则，并满足原平台的登录与权限要求。</p>
+    </section>
+
+    <section id="history-view" aria-labelledby="history-title" hidden>
+      <div class="intro history-intro"><a class="back-link" href="#home"><svg class="icon"><use href="#i-arrow"/></svg>返回主页</a><span class="eyebrow">YOUR RECENT ACTIVITIES</span><h1 id="history-title">用过的码，<span>都在这里。</span></h1><p>在这台设备，再次找到你准备过的活动。</p></div>
+      <section class="panel history-panel" aria-label="生成历史">
+        <div class="history-toolbar"><div class="history-summary">最近生成 <span id="history-total">0</span></div><button type="button" id="clear-history" class="text-button danger"><svg class="icon"><use href="#i-trash"/></svg>清空历史</button></div>
+        <div class="search-wrap"><svg class="icon"><use href="#i-search"/></svg><input type="search" id="history-search" placeholder="搜索活动名称或 ID" aria-label="搜索活动名称或 ID"></div>
+        <p id="storage-notice" class="storage-notice" hidden>当前浏览器不允许保存记录，本次历史仅在页面打开期间可用。</p>
+        <div id="history-list" class="history-list"></div>
+        <div id="history-empty" class="history-empty"><span class="empty-history-icon"><svg class="icon"><use href="#i-history"/></svg></span><h2 id="history-empty-title">第一张码，从这里开始</h2><p id="history-empty-text">生成过的活动会自动出现在这里，最多保留 50 条。</p><a class="primary-button" href="#home" id="history-start">去生成二维码 <svg class="icon"><use href="#i-arrow"/></svg></a></div>
+        <p class="history-footnote"><svg class="icon"><use href="#i-shield"/></svg>记录仅存于当前浏览器，清理浏览器数据后会被移除。</p>
+      </section>
+    </section>
+  </main>
+
+  <footer class="site-footer shell"><span class="footer-brand">码上<span>让每次活动，都有好开场。</span></span><span>独立辅助工具 · 非官方服务</span></footer>
+  <nav class="mobile-nav" aria-label="移动主导航"><a href="#home" data-nav="home" class="active" aria-current="page"><svg class="icon"><use href="#i-qr"/></svg><span>生成二维码</span></a><a href="#history" data-nav="history"><svg class="icon"><use href="#i-history"/></svg><span>历史记录 <span data-count>0</span></span></a></nav>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <dialog id="image-dialog" class="image-dialog" aria-labelledby="image-dialog-title"><div class="dialog-top"><h2 id="image-dialog-title">保存二维码</h2><button type="button" class="icon-button" data-close-dialog="image-dialog" aria-label="关闭图片预览"><svg class="icon"><use href="#i-close"/></svg></button></div><img id="download-preview" alt="待保存的二维码" width="1200" height="1200"><p>纯白底 · 1200 × 1200 PNG<br>手机也可以长按图片，选择“存储图像”。</p><a id="download-link" class="primary-button"><svg class="icon"><use href="#i-download"/></svg>下载 PNG 图片</a><p class="dialog-tip">微信等内置浏览器如无法保存，请在系统浏览器中打开。</p></dialog>
+  <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-title"><span class="confirm-icon"><svg class="icon"><use href="#i-trash"/></svg></span><h2 id="confirm-title">清空所有历史记录？</h2><p>这台设备上保存的活动记录将被移除，此操作无法撤销。</p><div class="dialog-actions"><button type="button" class="secondary-button" data-close-dialog="confirm-dialog">保留记录</button><button type="button" class="danger-button" id="confirm-clear">确认清空</button></div></dialog>
+  <noscript><div class="noscript">请开启浏览器的 JavaScript 功能后使用二维码生成器。</div></noscript>
+</body>
+</html>

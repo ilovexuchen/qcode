@@ -1,0 +1,10 @@
+node_modules/
+test-results/
+*.doc
+*.docx
+*.pdf
+*.log
+.env
+.env.*
+.DS_Store
+Thumbs.db

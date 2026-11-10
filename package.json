@@ -1,0 +1,14 @@
+{
+  "name": "activity-qr-generator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "手机端活动签到、签退二维码生成器",
+  "scripts": {
+    "dev": "node scripts/serve.cjs",
+    "test": "node --test tests/core.test.cjs",
+    "test:e2e": "node tests/browser.cjs",
+    "vendor": "node scripts/vendor.cjs"
+  },
+  "dependencies": { "qrcode-generator": "2.0.4" },
+  "devDependencies": { "jsqr": "1.4.0", "playwright": "1.65.0" }
+}
