@@ -2,9 +2,11 @@
 
 手机优先的四川大学第二课堂活动二维码生成器。无需账户、服务器或数据库，所有转换和二维码绘制在浏览器本地完成。
 
-**在线网页：** https://genshinstartmoonlight.github.io/activity-qr-generator/
+**网页发布地址（启用 Pages 并部署成功后）：** https://ilovexuchen.github.io/qcode/
 
-**代码仓库：** https://github.com/genshinstartmoonlight/activity-qr-generator
+**代码仓库：** https://github.com/ilovexuchen/qcode
+
+本副本保留原项目的提交历史。首次发布设置见[迁移部署说明](./迁移部署说明.md)；上传代码不等于 Pages 已经上线。
 
 ## 使用
 
